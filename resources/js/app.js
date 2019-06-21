@@ -61,7 +61,6 @@ class App {
       $slide => ($slide.style.width = `${100 / SLIDE_LENGTH}%`)
     );
 
-    //
     this.updateSlidePosition(-this.sliderWidth);
   }
 
