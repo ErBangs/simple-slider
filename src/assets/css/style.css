@@ -1,0 +1,164 @@
+@charset "UTF-8";
+/*----------dont edit css----------*/
+a, abbr, acronym, address, applet, article, aside, audio, b, big, blockquote, body, canvas, caption, center, cite, code, dd, del, details, dfn, div, dl, dt, em, embed, fieldset, figcaption, figure, footer, form, h1, h2, h3, h4, h5, h6, header, hgroup, html, i, iframe, img, ins, kbd, label, legend, li, main, mark, menu, nav, object, ol, output, p, pre, q, ruby, s, samp, section, small, span, strike, strong, sub, summary, sup, table, tbody, td, tfoot, th, thead, time, tr, tt, u, ul, var, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  vertical-align: baseline;
+}
+
+article, aside, details, figcaption, figure, footer, header, hgroup, main, menu, nav, section {
+  display: block;
+}
+
+ol, ul {
+  list-style: none;
+}
+
+blockquote, q {
+  quotes: none;
+}
+
+blockquote:after, blockquote:before, q:after, q:before {
+  content: '';
+  content: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+body {
+  font-family: 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, 'メイリオ', 'Lucida Grande', sans-serif;
+  font-size: 100%;
+  color: #000000;
+  line-height: 1;
+  -webkit-text-size-adjust: 100%;
+  width: 100%;
+  -webkit-font-feature-settings: "palt";
+          font-feature-settings: "palt";
+}
+
+img {
+  width: 100%;
+  vertical-align: top;
+}
+
+a {
+  text-decoration: none;
+}
+
+input, textarea {
+  border: none;
+  background: none;
+  -webkit-appearance: none;
+}
+
+.slider {
+  position: relative;
+  width: 80vw;
+  height: calc(80*0.5vw);
+  margin: 50px auto 0;
+  background: #ccc;
+  overflow: hidden;
+}
+
+.slider__inner {
+  height: 100%;
+}
+
+.slider__item {
+  height: 100%;
+  float: left;
+  text-align: center;
+}
+
+.slider__item.slide-1 {
+  background: red;
+}
+
+.slider__item.slide-2 {
+  background: blue;
+}
+
+.slider__item.slide-3 {
+  background: green;
+}
+
+.slider__item.slide-4 {
+  background: yellow;
+}
+
+.slider__item.slide-5 {
+  background: pink;
+}
+
+.slider__text {
+  font-size: 30px;
+  font-weight: bold;
+  color: #fff;
+  line-height: calc(80*0.5vw);
+}
+
+.slider .slider__controller--next, .slider .slider__controller--prev {
+  position: absolute;
+  width: 4vw;
+  height: 4vw;
+  top: 50%;
+  border-radius: 2vw;
+  background: rgba(0, 0, 0, 0.7);
+  -webkit-transform: translateY(-50%);
+      -ms-transform: translateY(-50%);
+          transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.slider .slider__controller--next::before, .slider .slider__controller--prev::before {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  color: #fff;
+  font-size: 2vw;
+  text-align: center;
+  line-height: 4vw;
+}
+
+.slider__controller--next {
+  right: 2vw;
+}
+
+.slider__controller--next::before {
+  content: '>';
+}
+
+.slider__controller--prev {
+  left: 2vw;
+}
+
+.slider__controller--prev::before {
+  content: '<';
+}
+
+.slider__indicator {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 10vw;
+  margin: 20px auto 0;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.slider__indicator .dot {
+  width: 1.4vw;
+  height: 1.4vw;
+  border-radius: 0.7vw;
+  background: #ccc;
+  cursor: pointer;
+}
+
+.slider__indicator .dot.is-active {
+  background: #111;
+}

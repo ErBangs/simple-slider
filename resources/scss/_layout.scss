@@ -1,0 +1,92 @@
+@charset "utf-8";
+
+.slider {
+  position: relative;
+  width: 80vw;
+  height: calc(80*0.5vw);
+  margin: 50px auto 0;
+  background: #ccc;
+  overflow: hidden;
+  &__inner {
+    height: 100%;
+  }
+  &__item {
+    height: 100%;
+    float: left;
+    text-align: center;
+    &.slide-1 {
+      background: red;
+    }
+    &.slide-2 {
+      background: blue;
+    }
+    &.slide-3 {
+      background: green;
+    }
+    &.slide-4 {
+      background: yellow;
+    }
+    &.slide-5 {
+      background: pink;
+    }
+  }
+  &__text {
+    font-size: 30px;
+    font-weight: bold;
+    color: #fff;
+    line-height: calc(80*0.5vw);
+  }
+  %__controller {
+    position: absolute;
+    width: 4vw;
+    height: 4vw;
+    top: 50%;
+    border-radius: 2vw;
+    background: rgba(0, 0, 0, 0.7);
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+  %__controller-before {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    color: #fff;
+    font-size: 2vw;
+    text-align: center;
+    line-height: 4vw;
+  }
+  &__controller {
+    &--next {
+      @extend %__controller;
+      right: 2vw;
+      &::before {
+        @extend %__controller-before;
+        content: '>';
+      }
+    }
+    &--prev {
+      @extend %__controller;
+      left: 2vw;
+      &::before {
+        @extend %__controller-before;
+        content: '<';
+      }
+    }
+  }
+  &__indicator {
+    display: flex;
+    width: 10vw;
+    margin: 20px auto 0;
+    justify-content: space-between;
+    .dot {
+      width: 1.4vw;
+      height: 1.4vw;
+      border-radius: 0.7vw;
+      background: #ccc;
+      cursor: pointer;
+      &.is-active {
+        background: #111;
+      }
+    }
+  }
+}
