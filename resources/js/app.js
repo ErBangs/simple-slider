@@ -49,13 +49,11 @@ class App {
       const PAGE_X = Math.ceil(event.changedTouches[0].pageX);
       this.firstTouchPoint = PAGE_X;
       this.lastTouchPoint = PAGE_X;
-      console.log(this.firstTouchPoint);
     });
 
     this.$slider.addEventListener('touchmove', event => {
       const PAGE_X = Math.ceil(event.changedTouches[0].pageX);
       const POSITION = this.lastPosition + (PAGE_X - this.lastTouchPoint);
-      console.log('移動量:', PAGE_X - this.lastTouchPoint);
       this.updateSlidePosition(POSITION);
       this.acceleration = this.lastTouchPoint - PAGE_X;
       this.lastTouchPoint = PAGE_X;
@@ -65,19 +63,15 @@ class App {
       const PAGE_X = Math.ceil(event.changedTouches[0].pageX);
       const MOVEMENT = PAGE_X - this.firstTouchPoint;
 
-      console.log('加速度:', this.acceleration);
-      console.log('移動量:', MOVEMENT);
+      // 加速度と移動量を元にスライドを動かすか判定（当てはまらなければ元の位置に戻す）
+      this.acceleration >= 10 || MOVEMENT <= -(this.sliderWidth / 5)
+        ? this.toNext(MOVEMENT)
+        : this.acceleration <= -10 || MOVEMENT >= this.sliderWidth / 5
+        ? this.toPrev(MOVEMENT)
+        : this.move();
 
-      // 加速度と移動量を元にスライド動かすか判定
-      if (this.acceleration >= 10 || MOVEMENT <= -(this.sliderWidth / 5)) {
-        this.toNext(MOVEMENT);
-      } else if (this.acceleration <= -10 || MOVEMENT >= this.sliderWidth / 5) {
-        this.toPrev(MOVEMENT);
-      } else {
-        // 条件に当てはまらなければ値をリセットしてスライドの位置を元に戻す
-        this.acceleration = 0;
-        this.move();
-      }
+      // 値をリセット
+      this.acceleration = 0;
     });
   }
 
