@@ -43,13 +43,11 @@ module.exports = {
             options: {
               presets: [
                 [
-                  '@babel/env',
+                  '@babel/preset-env',
                   {
-                    modules: false,
                     targets: {
-                      browsers: ['> 1%', 'last 3 versions', 'ie 11']
+                      ie: 11
                     },
-                    debug: true,
                     useBuiltIns: 'usage',
                     corejs: 3
                   }
