@@ -69,6 +69,7 @@ input, textarea {
 }
 
 .slider__item {
+  width: 80vw;
   height: 100%;
   float: left;
   text-align: center;

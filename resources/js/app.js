@@ -10,8 +10,9 @@ class App {
     this.$activeDot = document.querySelector('.dot.is-active');
 
     // 数値
-    this.sliderWidth = this.$slider.clientWidth;
+    this.sliderWidth = Math.ceil(window.innerWidth * 0.8);
     this.lastPosition = -this.sliderWidth;
+    this.lastWidth = this.$slides[0].clientWidth;
     this.defaultSlideLength = this.$slides.length;
     this.currentIndex = 1;
 
@@ -23,6 +24,9 @@ class App {
    * イベント設定
    */
   bind() {
+    // リサイズ時にスタイルとかを更新
+    window.addEventListener('resize', () => this.update());
+
     // 次へ
     this.$nextButton.addEventListener('click', () => this.toNext());
 
@@ -57,11 +61,26 @@ class App {
     // スライドの数に応じてスタイル調整
     const SLIDE_LENGTH = this.$slides.length;
     this.$inner.style.width = `${SLIDE_LENGTH}00%`;
-    [...this.$slides].forEach(
-      $slide => ($slide.style.width = `${100 / SLIDE_LENGTH}%`)
-    );
 
     this.updateSlidePosition(-this.sliderWidth);
+  }
+
+  /**
+   * 更新処理
+   */
+  update() {
+    // スライドのサイズがどれだけ変わったか算出
+    const DIFFERENCE = this.lastWidth - this.$slides[0].clientWidth;
+    this.lastWidth = this.$slides[0].clientWidth;
+
+    // 幅の取得
+    this.sliderWidth = Math.ceil(window.innerWidth * 0.8);
+
+    // スライドの位置更新
+    this.lastPosition = Math.ceil(
+      this.lastPosition + DIFFERENCE * this.currentIndex
+    );
+    this.updateSlidePosition(this.lastPosition);
   }
 
   /**
