@@ -120,8 +120,8 @@ class App {
    * @param {Number} value - スライダーの位置
    */
   updateSlidePosition(value) {
-    // 実行中のアニメーションを終了させる
-    velocity(this.$inner, 'stop');
+    // 実行中のアニメーションを停止させる
+    velocity(this.$inner, 'stop', true);
 
     // 現在位置の情報を更新
     this.lastPosition = value;
@@ -172,7 +172,7 @@ class App {
    */
   move() {
     // 実行中のアニメーションを終了させる
-    velocity(this.$inner, 'finish');
+    velocity(this.$inner, 'finish', true);
 
     // 移動先
     const POSITION = -this.sliderWidth * this.currentIndex;
