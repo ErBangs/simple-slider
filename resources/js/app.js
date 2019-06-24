@@ -15,6 +15,9 @@ class App {
     this.lastWidth = this.$slides[0].clientWidth;
     this.defaultSlideLength = this.$slides.length;
     this.currentIndex = 1;
+    this.acceleration = 0;
+    this.firstTouchPoint = null;
+    this.lastTouchPoint = null;
 
     this.bind();
     this.initialize();
@@ -27,19 +30,54 @@ class App {
     // リサイズ時にスタイルとかを更新
     window.addEventListener('resize', () => this.update());
 
-    // 次へ
+    // 次のスライドへ
     this.$nextButton.addEventListener('click', () => this.toNext());
 
-    // 前へ
+    // 前のスライドへ
     this.$prevButton.addEventListener('click', () => this.toPrev());
 
     // 指定のスライドへ
     [...this.$dots].forEach($dot => {
       $dot.addEventListener('click', () => {
         this.currentIndex = parseInt($dot.dataset.index);
-        this.toSpecified();
+        this.move();
         this.updateActiveDot();
       });
+    });
+
+    this.$slider.addEventListener('touchstart', event => {
+      const PAGE_X = Math.ceil(event.changedTouches[0].pageX);
+      this.firstTouchPoint = PAGE_X;
+      this.lastTouchPoint = PAGE_X;
+      console.log(this.firstTouchPoint);
+    });
+
+    this.$slider.addEventListener('touchmove', event => {
+      const PAGE_X = Math.ceil(event.changedTouches[0].pageX);
+      const POSITION = this.lastPosition + (PAGE_X - this.lastTouchPoint);
+      console.log('移動量:', PAGE_X - this.lastTouchPoint);
+      this.updateSlidePosition(POSITION);
+      this.acceleration = this.lastTouchPoint - PAGE_X;
+      this.lastTouchPoint = PAGE_X;
+    });
+
+    this.$slider.addEventListener('touchend', event => {
+      const PAGE_X = Math.ceil(event.changedTouches[0].pageX);
+      const MOVEMENT = PAGE_X - this.firstTouchPoint;
+
+      console.log('加速度:', this.acceleration);
+      console.log('移動量:', MOVEMENT);
+
+      // 加速度と移動量を元にスライド動かすか判定
+      if (this.acceleration >= 10 || MOVEMENT <= -(this.sliderWidth / 5)) {
+        this.toNext(MOVEMENT);
+      } else if (this.acceleration <= -10 || MOVEMENT >= this.sliderWidth / 5) {
+        this.toPrev(MOVEMENT);
+      } else {
+        // 条件に当てはまらなければ値をリセットしてスライドの位置を元に戻す
+        this.acceleration = 0;
+        this.move();
+      }
     });
   }
 
@@ -77,10 +115,10 @@ class App {
     this.sliderWidth = Math.ceil(window.innerWidth * 0.8);
 
     // スライドの位置更新
-    this.lastPosition = Math.ceil(
+    const POSITION = Math.ceil(
       this.lastPosition + DIFFERENCE * this.currentIndex
     );
-    this.updateSlidePosition(this.lastPosition);
+    this.updateSlidePosition(POSITION);
   }
 
   /**
@@ -89,75 +127,69 @@ class App {
    */
   updateSlidePosition(value) {
     // 実行中のアニメーションを終了させる
-    velocity(this.$inner, 'finish');
+    velocity(this.$inner, 'stop');
+
+    // 現在位置の情報を更新
+    this.lastPosition = value;
+
+    // 0秒で指定の位置へ
     velocity(this.$inner, { translateX: value }, { duration: 0 });
   }
 
   /**
    * 次のスライドへ
+   * @param {Number} touchMovedValue - 指操作でスライダーが動いている量
    */
-  toNext() {
+  toNext(touchMovedValue = 0) {
     // 最後のスライドから次のスライドへ行こうとした時
     if (this.currentIndex === this.defaultSlideLength) {
       // 先頭に複製されたスライドの位置へ移動
-      this.updateSlidePosition(0);
-      this.lastPosition = 0;
+      this.updateSlidePosition(touchMovedValue);
       this.currentIndex = 1;
     } else {
       // 現在のスライド番号を更新
       this.currentIndex += 1;
     }
 
-    // 移動量の算出（前回の位置からスライド1枚分マイナス）
-    let afterPosition = this.lastPosition - this.sliderWidth;
-
-    this.move(afterPosition);
+    this.move();
   }
 
   /**
    * 前のスライドへ
+   * @param {Number} touchMovedValue - 指操作でスライダーが動いている量
    */
-  toPrev() {
+  toPrev(touchMovedValue = 0) {
     // 1枚目のスライドの状態で前のスライドへ行こうとした時
     if (this.currentIndex === 1) {
       // 最後尾に複製されたスライドの位置へ移動
       const POSITION = -this.sliderWidth * (this.defaultSlideLength + 1);
-      this.updateSlidePosition(POSITION);
-      this.lastPosition = POSITION;
+      this.updateSlidePosition(POSITION + touchMovedValue);
       this.currentIndex = this.defaultSlideLength;
     } else {
       // 現在のスライド番号を更新
       this.currentIndex -= 1;
     }
 
-    // 移動量の算出（前回の位置からスライド1枚分プラス）
-    let afterPosition = this.lastPosition + this.sliderWidth;
-
-    this.move(afterPosition);
-  }
-
-  /**
-   * 指定のスライドへ
-   */
-  toSpecified() {
-    // 移動量の算出
-    let afterPosition = -this.sliderWidth * this.currentIndex;
-    this.move(afterPosition);
+    this.move();
   }
 
   /**
    * スライダーを動かす
-   * @param {Number} value - 動かす量
    */
-  move(value) {
+  move() {
     // 実行中のアニメーションを終了させる
     velocity(this.$inner, 'finish');
 
+    // 移動先
+    const POSITION = -this.sliderWidth * this.currentIndex;
+
     // 前回の位置情報を更新
-    this.lastPosition = value;
+    this.lastPosition = POSITION;
+
+    // アニメーション実行
     velocity(
       this.$inner,
-      { translateX: value },
+      { translateX: POSITION },
       {
         duration: 500,
         easing: [250, 30],
